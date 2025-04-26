@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Administrador de Tareas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Administrador de Tareas</h1>
+        </header>
+
+        <section class="task-form">
+            <input type="text" id="taskTitle" placeholder="Escribe tu tarea aquí..." />
+            <input type="date" id="taskDate" />
+            <button id="addTaskBtn">Añadir Tarea</button>
+        </section>
+
+        <section class="filters">
+            <button class="filter-btn" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="pending">Pendientes</button>
+            <button class="filter-btn" data-filter="completed">Completadas</button>
+        </section>
+
+        <ul id="taskList" class="task-list"></ul>
+    </div>
+
+    <footer>
+        <p>© 2025 EDWIN MELENDEZ, ROBER MERLANO, KEVIN FERNANDEZ Y LUIS DE LA ROSA</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
