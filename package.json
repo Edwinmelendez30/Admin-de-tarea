@@ -1,0 +1,13 @@
+{
+"name": "admin-de-tareas",
+"version": "1.0.0",
+"type": "module",
+"scripts": {
+    "test": "jest"
+},
+"devDependencies": {
+    "jest": "^29.0.0",
+    "@babel/preset-env": "^7.0.0",
+    "babel-jest": "^29.0.0"
+}
+}

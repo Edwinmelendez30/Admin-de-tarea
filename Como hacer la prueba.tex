@@ -1,0 +1,257 @@
+PROYECTO: PRUEBAS UNITARIAS CON JEST – ADMINISTRADOR DE TAREAS
+📁 CARPETAS Y ARCHIVOS DEL PROYECTO
+
+
+Administrador de tareas/
+├── node_modules/
+├── babel.config.js
+├── package.json
+├── taskManager.js
+├── taskManager.test.js
+📁 CARPETA: node_modules/
+📌 ¿Qué es?
+Esta carpeta se crea automáticamente cuando usamos npm install.
+
+🧠 ¿Para qué sirve?
+Contiene todas las dependencias necesarias para ejecutar Jest y Babel.
+
+Nunca se edita manualmente.
+
+No se sube a GitHub ni se comparte; se genera automáticamente.
+
+📄 ARCHIVO: package.json
+📌 ¿Qué es?
+Es el archivo principal de configuración del proyecto en Node.js.
+
+🧠 ¿Para qué sirve?
+Define el nombre del proyecto, versión y tipo de módulos.
+
+Guarda las dependencias necesarias (como jest, babel-jest).
+
+Permite ejecutar scripts como npm test.
+
+📄 Código :
+json
+Copiar
+Editar
+{
+  "name": "admin-de-tareas",              // Nombre del proyecto
+  "version": "1.0.0",                      // Versión
+  "type": "module",                        // Permite usar import/export
+  "scripts": {
+    "test": "jest"                         // Permite ejecutar pruebas con "npm test"
+  },
+  "devDependencies": {
+    "jest": "^29.0.0",                     // Herramienta para pruebas
+    "@babel/preset-env": "^7.0.0",         // Convierte código moderno
+    "babel-jest": "^29.0.0"                // Conecta Jest con Babel
+  }
+}
+📄 ARCHIVO: babel.config.js
+📌 ¿Qué es?
+Es el archivo que configura Babel para que pueda entender código moderno (como import/export) dentro de Jest.
+
+🧠 ¿Para qué sirve?
+Permite que Jest pueda interpretar correctamente nuestros módulos JavaScript (ESModules).
+
+📄 Código explicado:
+js
+
+export default {
+  presets: [['@babel/preset-env', { targets: { node: 'current' } }]]
+};
+@babel/preset-env: convierte el código moderno a una versión que Node.js pueda ejecutar.
+
+targets: { node: 'current' }: asegura compatibilidad con tu versión de Node.
+
+📄 ARCHIVO: taskManager.js
+📌 ¿Qué es?
+Este archivo contiene toda la lógica del administrador de tareas. Aquí se implementan las funciones que permiten crear, eliminar y manejar tareas.
+
+🧠 ¿Para qué sirve?
+Separar la lógica del sistema para que se pueda probar fácilmente sin depender de HTML o del navegador.
+
+📄 Código y explicación:
+js
+
+export let tasks = [];
+📌 Es un arreglo que almacena todas las tareas. Se exporta para que otros archivos puedan usarlo.
+
+js
+Copiar
+Editar
+export function addTask(title, date) {
+  if (!title || !date) throw new Error("Campos incompletos");
+📌 La función addTask crea una tarea nueva. Si falta algún campo, lanza un error para evitar datos incompletos.
+
+js
+Copiar
+Editar
+  const newTask = {
+    id: Date.now(),
+    title,
+    date,
+    completed: false
+  };
+📌 Crea el objeto newTask con un ID único, título, fecha y estado completed en false.
+
+js
+Copiar
+Editar
+  tasks.push(newTask);
+  return newTask;
+}
+📌 La tarea se guarda en el arreglo tasks y se retorna para confirmar su creación.
+
+js
+Copiar
+Editar
+export function toggleTask(id) {
+  const task = tasks.find(t => t.id === id);
+  if (task) task.completed = !task.completed;
+}
+📌 Busca una tarea por su ID y cambia su estado: de completada a pendiente, o viceversa.
+
+js
+Copiar
+Editar
+export function deleteTask(id) {
+  tasks = tasks.filter(t => t.id !== id);
+}
+📌 Elimina una tarea por su ID, dejando todas las demás.
+
+js
+Copiar
+Editar
+export function getTasks(filter = "all") {
+  if (filter === "completed") return tasks.filter(t => t.completed);
+  if (filter === "pending") return tasks.filter(t => !t.completed);
+  return tasks;
+}
+📌 Filtra las tareas según el estado:
+
+"all" → todas las tareas.
+
+"completed" → solo completadas.
+
+"pending" → solo pendientes.
+
+js
+Copiar
+Editar
+export function clearTasks() {
+  tasks = [];
+}
+📌 Limpia todas las tareas. Se usa para reiniciar el sistema en las pruebas.
+
+📄 ARCHIVO: taskManager.test.js
+📌 ¿Qué es?
+Este archivo contiene las pruebas unitarias usando Jest.
+Cada prueba verifica que una función del sistema funcione correctamente.
+
+🧠 ¿Para qué sirve?
+Asegura que el sistema sea confiable.
+
+Evita errores en funciones clave.
+
+Permite hacer cambios sin miedo a romper otras partes del código.
+
+📄 Código y explicación:
+js
+Copiar
+Editar
+import {
+  addTask,
+  toggleTask,
+  deleteTask,
+  getTasks,
+  clearTasks
+} from './taskManager.js';
+📌 Importamos todas las funciones que vamos a probar.
+
+js
+Copiar
+Editar
+beforeEach(() => {
+  clearTasks();
+});
+📌 Antes de cada prueba, limpiamos el arreglo de tareas para que los resultados no se mezclen.
+
+✅ Prueba 1: Añadir tarea correctamente
+js
+Copiar
+Editar
+test('añade una tarea correctamente', () => {
+  const task = addTask("Estudiar Jest", "2025-05-22");
+  expect(task.title).toBe("Estudiar Jest");
+  expect(task.date).toBe("2025-05-22");
+  expect(task.completed).toBe(false);
+});
+✔ Verifica que la función addTask cree la tarea con los valores correctos.
+
+✅ Prueba 2: Campos vacíos
+js
+Copiar
+Editar
+test('lanza error si falta título o fecha', () => {
+  expect(() => addTask("", "")).toThrow("Campos incompletos");
+});
+✔ Confirma que no se puede crear una tarea sin datos válidos.
+
+✅ Prueba 3: Cambiar estado
+js
+Copiar
+Editar
+test('cambia el estado de completado', () => {
+  const task = addTask("Completar tarea", "2025-05-22");
+  toggleTask(task.id);
+  expect(getTasks()[0].completed).toBe(true);
+});
+✔ Verifica que el estado de la tarea se actualiza correctamente.
+
+✅ Prueba 4: Eliminar tarea
+js
+Copiar
+Editar
+test('elimina una tarea por id', () => {
+  const task = addTask("Tarea a eliminar", "2025-05-22");
+  deleteTask(task.id);
+  expect(getTasks()).toHaveLength(0);
+});
+✔ Asegura que la tarea desaparezca del sistema.
+
+✅ Prueba 5: Filtrar tareas
+js
+Copiar
+Editar
+test('filtra tareas completadas y pendientes', () => {
+  const t1 = addTask("Tarea 1", "2025-05-22");
+  const t2 = addTask("Tarea 2", "2025-05-22");
+  toggleTask(t1.id);
+
+  expect(getTasks("completed")).toHaveLength(1);
+  expect(getTasks("pending")).toHaveLength(1);
+});
+✔ Comprueba que el filtro devuelve correctamente las tareas según su estado.
+
+✅ ¿CÓMO EJECUTAR LAS PRUEBAS?
+Abre la terminal.
+
+Escribe:
+
+bash
+Copiar
+Editar
+npm install
+npm test
+✅ Si todo funciona bien, verás algo así:
+
+bash
+Copiar
+Editar
+PASS  ./taskManager.test.js
+✓ añade una tarea correctamente
+✓ lanza error si falta título o fecha
+✓ cambia el estado de completado
+✓ elimina una tarea por id
+✓ filtra tareas completadas y pendientes
